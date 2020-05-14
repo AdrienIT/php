@@ -1,10 +1,26 @@
 <?php
 include_once 'connect.php';
 session_start();
-if (!isset($_SESSION["username"])) {
+if (!isset($_SESSION["entreprise_id"])) {
     header('location: index.php');
 }
-$session_username = $_SESSION['username'];
+
+$id = (int) $_SESSION["entreprise_id"];
+
+$query = $db->prepare("SELECT * FROM entreprises WHERE entreprise_id = :id ");
+$query->bindParam(":id", $id);
+$query->execute();
+$user = $query->fetch();
+
+$username = $user["username"];
+$email = $user["email"];
+$confirme = $user["confirme"];
+
+if ($confirme == 0) {
+    $confirme = 'Non';
+} else {
+    $confirme = 'Oui';
+}
 
 
 ?>
@@ -23,27 +39,8 @@ $session_username = $_SESSION['username'];
             <div></div>
             <div>
                 <div>
-                    <h3>Welcome <?php echo $session_username ?></h3>
+                    <h3>Welcome <?php echo $username ?></h3>
                     <h5>Your account details are: </h5>
-
-                    <?php
-                    $query = $db->prepare("SELECT * FROM entreprises WHERE username = ? ");
-                    $query->execute([$session_username]);
-                    $user = $query->fetch();
-
-                    $confirme = $user["confirme"];
-                    $username = $user["username"];
-                    $email = $user["email"];
-
-                    if ($confirme == 0) {
-                        $confirme = 'Non';
-                    } else {
-                        $confirme = 'Oui';
-                    }
-
-                    ?>
-
-
                     <table>
                         <tr>
                             <td>Username</td>
@@ -54,10 +51,11 @@ $session_username = $_SESSION['username'];
                             <td><?php echo $email ?></td>
                         </tr>
                         <tr>
-                            <td>Compte confirmé :</td>
+                            <td>Compte confirme ? : </td>
                             <td><?php echo $confirme ?></td>
                         </tr>
                     </table>
+
                     <br>
                     <a href="logout.php" style="text-decoration:none"> → Logout</a> <br>
                     <a href="update.php" style="text-decoration:none"> → Update Account</a> <br>

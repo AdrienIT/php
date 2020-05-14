@@ -7,7 +7,8 @@
 
 <body>
 	<div>
-        <h1>ENTREPRISE REGISTRATION</h1>
+	<h1>ENTREPRISE
+		 REGISTRATION</h1>
 		<div>
 			<div></div>
 			<div>
@@ -42,8 +43,8 @@
 					</form>
 				</div>
 			</div>
-            <div></div>
-            <a href="../index.php">Choix du compte</a>
+			<a href="../index.php">Choix du compte</a>
+			<div></div>
 		</div>
 	</div>
 </body>
@@ -54,16 +55,14 @@
 <?php
 include_once 'connect.php';
 session_start();
-if (isset($_SESSION["username"])) {
+if (isset($_SESSION["entreprise_id"])) {
 	header('location: ./home.php');
 }
 
 if (isset($_POST["submit"])) {
 	$username = $_POST["username"];
 	$email = $_POST["email"];
-    $password = $_POST["password"];
-    $confirme = '0';
-
+	$password = $_POST["password"];
 
 	$query1 = $db->prepare("SELECT username FROM entreprises WHERE username = ? ");
 	$query1->execute([$username]);
@@ -80,9 +79,9 @@ if (isset($_POST["submit"])) {
 				echo $err;
 			} else {
 				$password = md5($password);
-				$query = "INSERT INTO entreprises(username,email,password,confirme) VALUES(?,?,?,?)";
+				$query = "INSERT INTO users(username,email,password) VALUES(?,?,?)";
 				$query = $db->prepare($query);
-				if ($query->execute([$username, $email, $password, $confirme])) {
+				if ($query->execute([$username, $email, $password])) {
 					$_SESSION["username"] = $username;
 					header('location: ./home.php');
 				}

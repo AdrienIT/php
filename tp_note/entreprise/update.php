@@ -2,30 +2,30 @@
 include_once 'connect.php';
 session_start();
 
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["entreprise_id"])) {
     header('location: index.php');
 }
 
-$id = (int) $_SESSION["user_id"];
+$id = (int) $_SESSION["entreprise_id"];
 
-$query = $db->prepare("SELECT * FROM users WHERE user_id = ? ");
+$query = $db->prepare("SELECT * FROM entreprises WHERE entreprise_id = ? ");
 $query->execute([$id]);
-$user = $query->fetch();
+$entreprise = $query->fetch();
 
-var_dump($user);
+var_dump($entreprise);
 
-if (isset($user["user_id"])) {
-    if (isset($_POST['newpseudo']) and !empty($_POST['newpseudo']) and $_POST['newpseudo'] != $user['username']) {
+if (isset($entreprise["entreprise_id"])) {
+    if (isset($_POST['newpseudo']) and !empty($_POST['newpseudo']) and $_POST['newpseudo'] != $entreprise['username']) {
         $newpseudo = htmlspecialchars($_POST['newpseudo']);
-        $update_pseudo = $db->prepare("UPDATE users SET username = :username WHERE user_id = :id");
+        $update_pseudo = $db->prepare("UPDATE entreprises SET username = :username WHERE entreprise_id = :id");
         $update_pseudo->bindParam(":username",$newpseudo);
         $update_pseudo->bindParam(":id",$id);
         $update_pseudo->execute();
         header('Location: update.php?id='.$id);
     }
-    if (isset($_POST['newmail']) and !empty($_POST['newmail']) and $_POST['newmail'] != $user['email']) {
+    if (isset($_POST['newmail']) and !empty($_POST['newmail']) and $_POST['newmail'] != $entreprise['email']) {
         $newemail = htmlspecialchars($_POST['newmail']);
-        $update_email = $db->prepare('UPDATE users SET email = :email WHERE user_id = :id');
+        $update_email = $db->prepare('UPDATE entreprises SET email = :email WHERE entreprise_id = :id');
         $update_email->bindParam(":email",$newemail);
         $update_email->bindParam(":id",$id);
         $update_email->execute();
@@ -35,7 +35,7 @@ if (isset($user["user_id"])) {
         $passwd1 = md5($_POST['newpasswd1']);
         $passwd2 = md5($_POST['newpasswd2']);
         if ($passwd1  == $passwd2) {
-            $update_password = $db->prepare('UPDATE users SET password = :password WHERE user_id = :id');
+            $update_password = $db->prepare('UPDATE entreprises SET password = :password WHERE entreprise_id = :id');
             $update_password->bindParam(":password",$passwd1);
             $update_password->bindParam(":id",$id);
             $update_password->execute();
@@ -62,9 +62,9 @@ if (isset($user["user_id"])) {
     <h1>Edition de profil</h1>
     <form method="POST" action="" enctype="multipart/form-data">
         <label>Pseudo : </label>
-        <input type="text" name="newpseudo" placeholder="Pseudo" value="<?php echo $user['username']; ?>"> <br> <br>
+        <input type="text" name="newpseudo" placeholder="Pseudo" value="<?php echo $entreprise['username']; ?>"> <br> <br>
         <label>E-Mail : </label>
-        <input type="text" name="newmail" placeholder="Mail" value="<?php echo $user['email']; ?>"> <br> <br>
+        <input type="text" name="newmail" placeholder="Mail" value="<?php echo $entreprise['email']; ?>"> <br> <br>
         <label>Mot de passe : </label>
         <input type="password" name="newpasswd1" placeholder="Password"> <br> <br>
         <label>Confirmation - Mot de passe</label>

@@ -1,20 +1,18 @@
 <?php
 include_once 'connect.php';
 session_start();
-if (!isset($_SESSION["username"])) {
+if (!isset($_SESSION["user_id"])) {
     header('location: ../index.php');
 }
-$session_username = $_SESSION['username'];
+$id = (int) $_SESSION["user_id"];
 
-$query = $db->prepare("SELECT * FROM users WHERE username = ? ");
-$query->execute([$session_username]);
+$query = $db->prepare("SELECT * FROM users WHERE user_id = :id ");
+$query->bindParam(":id", $id);
+$query->execute();
 $user = $query->fetch();
 
 $username = $user["username"];
 
-?>
-
-<?php
 if (is_dir($username)) {
     array_map('unlink', glob("$username/*.*"));
     rmdir("./" . $username . "/");

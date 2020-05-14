@@ -9,11 +9,10 @@ if (isset($_GET['delete']) and !empty($_GET['delete'])) {
 
 $users = $bdd->query('SELECT * FROM users');
 
-
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -23,7 +22,7 @@ $users = $bdd->query('SELECT * FROM users');
 <body>
     <ul>
         <?php while ($u = $users->fetch()) { ?>
-            <li><?= $u['user_id'] ?> : <?= $u['username'] ?> - <a href="users.php?delete=<?= $u['user_id'] ?>">Supprimer</a></li>
+            <li><?= $u['user_id'] ?> : <?= $u['username'] ?> - <a href="users.php?delete=<?= $u['user_id'] ?>">Supprimer</a> - <a href="update_user.php?id=<?= $u['user_id'] ?>">Editer le compte</a> </li>
         <?php } ?>
     </ul>
     <a href="index.php">Retour à la page d'administration</a>

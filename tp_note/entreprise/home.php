@@ -1,10 +1,9 @@
 <?php
 include_once 'connect.php';
 session_start();
-if (!isset($_SESSION["username"])) {
-    header('location: index.php');
+if (!isset($_SESSION["entreprise_id"])) {
+    header('location: ./index.php');
 }
-$session_username = $_SESSION['username'];
 ?>
 
 

@@ -1,10 +1,19 @@
 <?php
 include_once 'connect.php';
 session_start();
-if (!isset($_SESSION["username"])) {
+if (!isset($_SESSION["user_id"])) {
     header('location: index.php');
 }
-$session_username = $_SESSION['username'];
+
+$id = (int) $_SESSION["user_id"];
+
+$query = $db->prepare("SELECT * FROM users WHERE user_id = :id ");
+$query->bindParam(":id", $id);
+$query->execute();
+$user = $query->fetch();
+
+$username = $user["username"];
+$email = $user["email"];
 
 
 ?>
@@ -23,17 +32,8 @@ $session_username = $_SESSION['username'];
             <div></div>
             <div>
                 <div>
-                    <h3>Welcome <?php echo $session_username ?></h3>
+                    <h3>Welcome <?php echo $username ?></h3>
                     <h5>Your account details are: </h5>
-
-                    <?php
-                    $query = $db->prepare("SELECT * FROM users WHERE username = ? ");
-                    $query->execute([$session_username]);
-                    $user = $query->fetch();
-
-                    $username = $user["username"];
-                    $email = $user["email"];
-                    ?>
                     <table>
                         <tr>
                             <td>Username</td>
