@@ -1,0 +1,12 @@
+Mettre le .htaccess et le .htpasswd dans le dossier à proteger, ici /admin/
+
+Config .htaccess:
+AuthName "Section Administration"
+	AuthType Basic
+	AuthUserFile "C:\xampp\htdocs\tp_note\admin\.htpasswd"
+	Require valid-user
+  
+Config .htpasswd
+admin2:$2y$10$CAM87KPjqzKH76IPoXMa5er4O7iJns3mXiepxymYrQmIPoE5G/G4q
+
+# admin2:test123 (pour tester la connection à la page admin)
