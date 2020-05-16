@@ -1,3 +1,50 @@
+<?php
+include_once 'connect.php';
+session_start();
+if (isset($_SESSION["username"]) || isset($_SESSION["entreprise_id"])) {
+	header('location: ./home.php');
+}
+
+if (isset($_POST["submit"])) {
+	$username = htmlspecialchars($_POST["username"]);
+	$email = htmlspecialchars($_POST["email"]);
+	$password = $_POST["password"];
+
+	$query1 = $db->prepare("SELECT username FROM entreprises WHERE username = ? ");
+	$query1->execute([$username]);
+	if ($query1->rowCount() > 0) {
+		$err = "Utilisateur deja enregistré";
+		echo $err;
+	} else {
+		if ($username == "") {
+			$err = "Merci de renseigner un utilisateur";
+			echo $err;
+		} else {
+			if (strlen($password) < 6) {
+				$err = "Le mot de pass devrait faire plus de 5 caractère";
+				echo $err;
+			} else {
+				$password = md5($password);
+				$query = "INSERT INTO entreprises(username,email,password) VALUES(?,?,?)";
+				$query = $db->prepare($query);
+				if ($query->execute([$username, $email, $password])) {
+
+					$id = (int) $_SESSION["entreprise_id"];
+
+					$query = $db->prepare("SELECT * FROM entreprises WHERE entreprise_id = :id ");
+					$query->bindParam(":id", $id);
+					$query->execute();
+					$user = $query->fetch();
+
+
+					header('location: ./login.php');
+				}
+			}
+		}
+	}
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -50,43 +97,3 @@
 </body>
 
 </html>
-
-
-<?php
-include_once 'connect.php';
-session_start();
-if (isset($_SESSION["entreprise_id"])) {
-	header('location: ./home.php');
-}
-
-if (isset($_POST["submit"])) {
-	$username = $_POST["username"];
-	$email = $_POST["email"];
-	$password = $_POST["password"];
-
-	$query1 = $db->prepare("SELECT username FROM entreprises WHERE username = ? ");
-	$query1->execute([$username]);
-	if ($query1->rowCount() > 0) {
-		$err = "Utilisateur deja enregistré";
-		echo $err;
-	} else {
-		if ($username == "") {
-			$err = "Merci de renseigner un utilisateur";
-			echo $err;
-		} else {
-			if (strlen($password) < 6) {
-				$err = "Le mot de pass devrait faire plus de 5 caractère";
-				echo $err;
-			} else {
-				$password = md5($password);
-				$query = "INSERT INTO users(username,email,password) VALUES(?,?,?)";
-				$query = $db->prepare($query);
-				if ($query->execute([$username, $email, $password])) {
-					$_SESSION["username"] = $username;
-					header('location: ./home.php');
-				}
-			}
-		}
-	}
-}
-?>

@@ -12,8 +12,6 @@ $query = $db->prepare("SELECT * FROM users WHERE user_id = ? ");
 $query->execute([$id]);
 $user = $query->fetch();
 
-var_dump($user);
-
 if (isset($user["user_id"])) {
     if (isset($_POST['newpseudo']) and !empty($_POST['newpseudo']) and $_POST['newpseudo'] != $user['username']) {
         $newpseudo = htmlspecialchars($_POST['newpseudo']);

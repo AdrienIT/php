@@ -6,7 +6,7 @@
 	}
 
 	if (isset($_POST["submit"])) {
-		$username = $_POST["username"];
+		$username = htmlspecialchars($_POST["username"]);
 		$password = md5($_POST["password"]);
 
 		$query1 = $db->prepare("SELECT * FROM users WHERE username = ? AND password = ? ");
@@ -17,8 +17,7 @@
 		if (count($user) > 0) {
 			$_SESSION['user_id'] = $user['user_id'];
 			header('Location: http://localhost/tp_note/user/home.php');
-		}
-		else{ 
+		} else { 
 			$err = "Username / Password incorrect";
 			echo $err;
 		}

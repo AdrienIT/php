@@ -6,19 +6,19 @@
 	}
 
 	if (isset($_POST["submit"])) {
-		$username = $_POST["username"];
+		$username = htmlspecialchars($_POST["username"]);
 		$password = md5($_POST["password"]);
 
 		$query1 = $db->prepare("SELECT * FROM entreprises WHERE username = ? AND password = ? ");
 		$query1->execute([$username, $password]);
-		$entreprise = $query1->fetch();
+		$user = $query1->fetch();
 
+		var_dump($user);
 
-		if (count($entreprise) > 0) {
-			$_SESSION['entreprise_id'] = $entreprise['entreprise_id'];
+		if (count($user) > 0) {
+			$_SESSION['entreprise_id'] = $user['entreprise_id'];
 			header('Location: http://localhost/tp_note/entreprise/home.php');
-		}
-		else{ 
+		} else { 
 			$err = "Username / Password incorrect";
 			echo $err;
 		}
